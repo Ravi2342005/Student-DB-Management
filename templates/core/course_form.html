@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="display-6 fw-bold text-primary mb-0">
+            {% if form.instance.pk %}
+            <i class="bi bi-pencil-square me-2"></i>Edit Course
+            {% else %}
+            <i class="bi bi-journal-plus me-2"></i>Add New Course
+            {% endif %}
+        </h2>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="{% url 'course-list' %}" class="btn btn-outline-secondary rounded-pill px-4"><i
+                class="bi bi-arrow-left me-1"></i> Back to Directory</a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-5">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm border-0">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold text-secondary">{{ form.code.label }} <span
+                                    class="text-danger">*</span></label>
+                            {{ form.code }}
+                            {% if form.code.errors %}
+                            <div class="text-danger small mt-1">{{ form.code.errors }}
+                            </div>
+                            {% endif %}
+                            
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold text-secondary">{{ form.name.label }} <span
+                                    class="text-danger">*</span></label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                            <div class="text-danger small mt-1">{{ form.name.errors }}       
+                            </div>
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <div class="text-danger small mt-1">{{ form.description.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">Enroll Students</label>
+                        {{ form.students }}
+                        <div class="form-text">Hold down "Control", or "Command" on a Mac, to select more than one.
+                        </div>
+                        {% if form.students.errors %}<div class="text-danger small mt-1">{{ form.students.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm">
+                            <i class="bi bi-save-fill me-2"></i> Save Course Record
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

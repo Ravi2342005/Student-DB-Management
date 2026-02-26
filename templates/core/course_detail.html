@@ -1,0 +1,84 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <a href="{% url 'course-list' %}" class="btn btn-outline-secondary rounded-pill"><i
+                    class="bi bi-arrow-left me-1"></i> Back</a>
+            <div class="btn-group shadow-sm">
+                <a href="{% url 'course-update' course.pk %}" class="btn btn-primary"><i
+                        class="bi bi-pencil-square me-1"></i> Edit</a>
+                <a href="{% url 'course-delete' course.pk %}" class="btn btn-danger"><i
+                        class="bi bi-trash-fill me-1"></i> Delete</a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Course Info -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-body p-4">
+                        <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 80px; height: 80px; font-size: 2rem;">
+                            <i class="bi bi-journal-bookmark-fill"></i>
+                        </div>
+                        <h4 class="fw-bold mb-1">{{ course.name }}</h4>
+                        <p class="text-muted mb-4"><span class="badge bg-secondary fs-6">{{ course.code }}</span></p>
+
+                        <div class="text-start mt-4">
+                            <h6 class="fw-bold text-dark">Description</h6>
+                            <p class="text-muted">{{ course.description|default:"No description provided." }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrolled Students -->
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div
+                        class="card-header bg-white border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-people-fill text-primary me-2"></i>Enrolled
+                            Students ({{ course.students.count }})</h5>
+                        <a href="{% url 'course-update' course.pk %}"
+                            class="btn btn-sm btn-outline-primary rounded-pill">Manage Enrollment</a>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if course.students.all %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Enrollment No.</th>
+                                        <th>Student Name</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for student in course.students.all %}
+                                    <tr>
+                                        <td class="fw-bold text-secondary">{{ student.enrollment_number }}</td>
+                                        <td class="fw-bold">{{ student.first_name }} {{ student.last_name }}</td>
+                                        <td class="text-end">
+                                            <a href="{% url 'student-detail' student.pk %}"
+                                                class="btn btn-sm btn-outline-info rounded-pill px-3">View Profile</a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info border-0 shadow-sm" role="alert">
+                            <i class="bi bi-info-circle-fill me-2"></i> No students are currently enrolled in this
+                            course.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

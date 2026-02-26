@@ -1,0 +1,91 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-md-8">
+        <h2 class="display-6 fw-bold text-primary mb-0">
+            {% if form.instance.pk %}
+            <i class="bi bi-pencil-square me-2"></i>Edit Marks
+            {% else %}
+            <i class="bi bi-award-fill me-2"></i>Record Student Marks
+            {% endif %}
+        </h2>
+    </div>
+    <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <a href="javascript:history.back()" class="btn btn-outline-secondary rounded-pill px-4"><i
+                class="bi bi-arrow-left me-1"></i> Cancel & Go Back</a>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-6">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-5">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger shadow-sm border-0">
+                        {{ form.non_field_errors }}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">{{ form.student.label }} <span
+                                class="text-danger">*</span></label>
+                        {{ form.student }}
+                        {% if form.student.errors %}<div class="text-danger small mt-1">{{ form.student.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-secondary">{{ form.course.label }} <span
+                                class="text-danger">*</span></label>
+                        {{ form.course }}
+                        {% if form.course.errors %}<div class="text-danger small mt-1">{{ form.course.errors }}</div>{%
+                        endif %}
+                    </div>
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary">{{ form.marks_obtained.label }} <span
+                                    class="text-danger">*</span></label>
+                            {{ form.marks_obtained }}
+                            {% if form.marks_obtained.errors %}<div class="text-danger small mt-1">{{
+                                form.marks_obtained.errors }}</div>{% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold text-secondary">{{ form.total_marks.label }} <span
+                                    class="text-danger">*</span></label>
+                            {{ form.total_marks }}
+                            {% if form.total_marks.errors %}<div class="text-danger small mt-1">{{
+                                form.total_marks.errors }}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm">
+                            <i class="bi bi-save-fill me-2"></i> Save Marks
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Initializer for initial values based on GET requests -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // If a student param is in the URL, pre-select it
+        const urlParams = new URLSearchParams(window.location.search);
+        const studentId = urlParams.get('student');
+        if (studentId) {
+            const studentSelect = document.getElementById('id_student');
+            if (studentSelect) {
+                studentSelect.value = studentId;
+            }
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <a href="{% url 'student-list' %}" class="btn btn-outline-secondary rounded-pill"><i
+                    class="bi bi-arrow-left me-1"></i> Back</a>
+            <div class="btn-group shadow-sm">
+                <a href="{% url 'mark-create' %}?student={{ student.pk }}" class="btn btn-success"><i
+                        class="bi bi-award-fill me-1"></i> Add Marks</a>
+                <a href="{% url 'student-update' student.pk %}" class="btn btn-primary"><i
+                        class="bi bi-pencil-square me-1"></i> Edit</a>
+                <a href="{% url 'student-delete' student.pk %}" class="btn btn-danger"><i
+                        class="bi bi-trash-fill me-1"></i> Delete</a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Profile Info -->
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-inline-flex align-items-center justify-content-center mb-3"
+                            style="width: 120px; height: 120px; font-size: 3rem; font-weight: bold;">
+                            {{ student.first_name|make_list|first }}{{ student.last_name|make_list|first }}
+                        </div>
+                        <h4 class="fw-bold mb-1">{{ student.first_name }} {{ student.last_name }}</h4>
+                        <p class="text-muted mb-3"><span class="badge bg-secondary">{{ student.enrollment_number
+                                }}</span></p>
+
+                        <div class="text-start mt-4">
+                            <p class="mb-2"><i class="bi bi-envelope-fill text-muted me-2"></i> {{ student.email }}</p>
+                            <p class="mb-2"><i class="bi bi-calendar-event-fill text-muted me-2"></i> Born {{
+                                student.date_of_birth|date:"M d, Y" }}</p>
+                            <p class="mb-0 text-muted small"><i class="bi bi-clock-history me-1"></i> Registered on {{
+                                student.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enrollment & Performance -->
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 rounded-4">
+                    <div class="card-header bg-white border-0 pt-4 pb-0 px-4">
+                        <h5 class="fw-bold text-dark mb-0"><i class="bi bi-journals text-primary me-2"></i>Enrollment &
+                            Performance</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% if student.courses.all %}
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-secondary mb-3">Enrolled Courses</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for course in student.courses.all %}
+                                <a href="{% url 'course-detail' course.pk %}"
+                                    class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 text-decoration-none px-3 py-2 rounded-pill fs-6 hover-lift">
+                                    {{ course.code }} - {{ course.name }}
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-warning border-0 shadow-sm" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> This student is not enrolled in any
+                            courses yet.
+                        </div>
+                        {% endif %}
+
+                        <hr class="my-4">
+
+                        <h6 class="fw-bold text-secondary mb-3">Marks Record</h6>
+                        {% if student.marks.all %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Course</th>
+                                        <th class="text-center">Marks</th>
+                                        <th class="text-center">Percentage</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-end">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for mark in student.marks.all %}
+                                    <tr>
+                                        <td class="fw-bold">{{ mark.course.name }}</td>
+                                        <td class="text-center text-primary fw-bold">{{ mark.marks_obtained }} <span
+                                                class="text-muted fw-normal small">/ {{ mark.total_marks }}</span></td>
+                                        <td class="text-center">
+                                            <div class="progress" style="height: 8px;">
+                                                <div class="progress-bar {% if mark.is_pass %}bg-success{% else %}bg-danger{% endif %}"
+                                                    role="progressbar"
+                                                    style="--mark-width: {{ mark.percentage|floatformat:0 }}%; width: var(--mark-width);"
+                                                    aria-valuenow="{{ mark.percentage|floatformat:0 }}"
+                                                    aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                            <small class="text-muted">{{ mark.percentage|floatformat:1 }}%</small>
+                                        </td>
+                                        <td class="text-center">
+                                            {% if mark.is_pass %}
+                                            <span class="badge bg-success rounded-pill px-3">Pass</span>
+                                            {% else %}
+                                            <span class="badge bg-danger rounded-pill px-3">Fail</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{% url 'mark-update' mark.pk %}"
+                                                class="btn btn-sm btn-outline-secondary"><i
+                                                    class="bi bi-pencil"></i></a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <p class="text-muted fst-italic">No marks assigned yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
